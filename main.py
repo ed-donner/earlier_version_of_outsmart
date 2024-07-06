@@ -2,21 +2,29 @@
 Entry point for the Outsmart Arena LLM Battle
 """
 
-from interfaces.llms import LLM
+import sys
 from dotenv import load_dotenv
+import logging
+
+from game.arenas import Arena
+
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S %z",
+)
+handler.setFormatter(formatter)
+root.addHandler(handler)
 
 
 def main():
     load_dotenv()
-    llm = LLM.for_model_name("gpt-3.5-turbo")
-    result = llm.send("You are a helpful assistant", "What's 2+2?", 100)
-    print(result)
-    llm = LLM.for_model_name("claude-3-haiku-20240307")
-    result = llm.send("You are a helpful assistant", "What's 2+2?", 100)
-    print(result)
-    llm = LLM.for_model_name("gemini-pro")
-    result = llm.send("You are a helpful assistant", "What's 2+2?", 10)
-    print(result)
+    arena = Arena.default()
+    print(arena.players[2].make_turn(1))
 
 
 if __name__ == "__main__":

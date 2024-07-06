@@ -1,6 +1,6 @@
 # Outsmart
 
-## A battle arena of diplomacy and deviousness between LLMs
+## A battle of diplomacy and deviousness between LLMs
 
 An Arena in which LLMs compete in a turn-based negotiation game.
 

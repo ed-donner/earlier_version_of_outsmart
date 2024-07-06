@@ -43,6 +43,12 @@ class LLM(ABC):
         """
         pass
 
+    def __repr__(self) -> str:
+        """
+        :return: A string version of the receiver
+        """
+        return f"<LLM {self.model_name} with temnp={self.temperature}>"
+
     @classmethod
     def model_map(cls) -> Dict[str, Any]:
         """
@@ -56,15 +62,16 @@ class LLM(ABC):
         return mapping
 
     @classmethod
-    def for_model_name(cls, model_name: str) -> Self:
+    def for_model_name(cls, model_name: str, temperature=1.0) -> Self:
         """
         Given a particular model name, instantiate one of the subclasses of the receiver and initialize it
         :param model_name: The name of the model to be communicated with
+        :param temperature: The temperature to be used in this model
         :return: an initialized instance of an LLM subclass
         """
         mapping = cls.model_map()
         llm_class = mapping[model_name]
-        llm = llm_class(model_name)
+        llm = llm_class(model_name, temperature)
         return llm
 
 
@@ -90,6 +97,7 @@ class GPT(LLM):
                 {"role": "user", "content": user_prompt},
             ],
             temperature=1.0,
+            response_format={"type": "json_object"},
         )
         return completion.choices[0].message.content
 
