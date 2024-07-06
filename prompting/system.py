@@ -26,7 +26,7 @@ Rules of the game:
 - Players choose to give one of their coins to a player, and take a coin from a different player
 - At the end of the turn, the players receive their private messages and any coins taken/given (with the player name)
 
-3. There's a special rule. If 2 players chose to give each other coins, and both take a coin from the same other player, that is considered a successful alliance and they are rewarded with an extra coin each.
+3. There's a special rule. If 2 players chose to give each other coins, and both take a coin from the same other player, that is considered a successful alliance and they are rewarded with an extra coin each. These coims are taken frpm the player who they both targeted.
 
 The objective is to negotiate with the other players and build a strategy to make money. The winner is the player with the most money after 10 moves.
 
@@ -35,7 +35,7 @@ Game mechanics:
 With each turn, you will be briefed on how many coins you have.
 You will get a summary of the private messages you received from the other players at each turn, and whether they gave or took a coin.
 
-You will then need to make your move by responding using JSON in the following format.
+You will then make your move by responding using JSON in the following format.
 Your response must strictly be JSON, with no other text before or after the JSON.
 
 Here is the format of your JSON response, with placeholders to show what you should cover:
@@ -50,7 +50,8 @@ Here is the format of your JSON response, with placeholders to show what you sho
     "take coin from": "Here you should put the player you will take a coin from; must be one of """
         + others
         + """",
-    "private messages": [
+    "private messages":
+    {
 """
     )
     lines = [
@@ -59,7 +60,7 @@ Here is the format of your JSON response, with placeholders to show what you sho
     ]
     response += ",\n".join(lines)
     response += """
-    ]
+    }
 }
 
 You must only respond in JSON, it must always give 1 coin and take 1 coin, and contain a private message to each of the other players.

@@ -5,8 +5,10 @@ Entry point for the Outsmart Arena LLM Battle
 import sys
 from dotenv import load_dotenv
 import logging
+import json
 
 from game.arenas import Arena
+from models.moves import Move
 
 root = logging.getLogger()
 root.setLevel(logging.INFO)
@@ -24,7 +26,9 @@ root.addHandler(handler)
 def main():
     load_dotenv()
     arena = Arena.default()
-    print(arena.players[2].make_turn(1))
+    arena.do_turn()
+    arena.do_turn()
+    arena.do_turn()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 from typing import List, Dict, Any
 from interfaces.llms import LLM
 from prompting.system import instructions
-from prompting.user import first_turn
+from prompting.user import prompt
+from models.records import TurnRecord
 
 
 class Player:
@@ -14,6 +15,7 @@ class Player:
     other_names: List[str]
     history: Dict[str, Any]
     coins: int
+    records: List[TurnRecord]
 
     def __init__(self, name: str, model_name: str, temperature: float):
         """
@@ -27,6 +29,7 @@ class Player:
         self.history = {}
         self.coins = 20
         self.other_names = []  # this will be initialized during Arena construction
+        self.records = []
 
     def __repr__(self) -> str:
         """
@@ -44,12 +47,9 @@ class Player:
         """
         :return: a User prompt to reflect this player in this turn
         """
-        if turn == 1:
-            return first_turn(self.name, self.other_names, self.coins)
-        else:
-            return ""
+        return prompt(self.name, self.other_names, self.coins, turn, self.records)
 
-    def make_turn(self, turn: int) -> str:
+    def make_move(self, turn: int) -> str:
         """
         Carry out a turn by interfacing with my LLM
         :param turn: which turn number we are on
@@ -57,4 +57,4 @@ class Player:
         """
         system_prompt = self.system_prompt()
         user_prompt = self.user_prompt(turn)
-        return self.llm.send(system_prompt, user_prompt, 200)
+        return self.llm.send(system_prompt, user_prompt, 400)
