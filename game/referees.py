@@ -43,17 +43,21 @@ class Referee:
             logger.error(f"Response received was:\n{response}")
             return TurnRecord(player.name, self.turn, is_invalid_move=True)
 
-    def do_turn(self):
+    def do_turn(self, progress):
         """
         This is the entry point, called by an Arena object to run a Turn
         First get each Player to make a move
         Then evaluate each Player in turn
+        :param progress: an object on which to report progress that will be reflected in the UI
         :return:
         """
-        for player in self.players:
+        for index, player in enumerate(self.players):
+            prog = index / len(self.players)
+            progress.progress(prog, text=f"{player.name} is thinking...")
             record = self.do_turn_for_player(player)
             self.records[player.name] = record
             player.records.append(record)
+        progress.progress(1.0, text="Finishing up..")
         self.handle_turn()
 
     def handle_turn(self):
@@ -98,10 +102,15 @@ class Referee:
         for player in self.players:
             name1 = player.name
             record1 = self.records[name1]
-            name2 = record1.move.give
-            record2 = self.records[name2]
-            if record2.move.give == name1:
-                if (name1 not in self.alliances) and (name2 not in self.alliances):
+            if not record1.is_invalid_move:
+                name2 = record1.move.give
+                record2 = self.records[name2]
+                if (
+                    not record2.is_invalid_move
+                    and record2.move.give == name1
+                    and (name1 not in self.alliances)
+                    and (name2 not in self.alliances)
+                ):
                     self.investigate_alliance(name1, record1, name2, record2)
 
     def investigate_alliance(
@@ -135,9 +144,12 @@ class Referee:
         :return:
         """
         for player in self.players:
-            messages = self.records[player.name].move.messages
-            for recipient, message in messages.items():
-                self.records[recipient].messages[player.name] = message
+            name = player.name
+            record = self.records[name]
+            if not record.is_invalid_move:
+                messages = record.move.messages
+                for recipient, message in messages.items():
+                    self.records[recipient].messages[player.name] = message
 
     def check_response(self, move: Move):
         """

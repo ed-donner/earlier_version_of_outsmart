@@ -39,17 +39,17 @@ class TurnRecord:
         :return: a string to represent this instance
         """
         result = f"Recap of Turn {self.turn}\n\n"
-        result += "The moves you made:\n"
+        result += "Your actions:\n"
         if self.is_invalid_move:
-            result += "Invalid JSON was provided, so your move was not processed"
+            result += "You provided invalid JSON, so your move was not processed"
         else:
             result += f"Your secret strategy: {self.move.strategy}\n"
             result += f"You gave a coin to {self.move.give}\n"
             result += f"You took a coin from {self.move.take}\n"
-            result += "You sent the following private messages:\n"
+            result += "You sent these private messages:\n"
             for recipient, message in self.move.messages.items():
                 result += f"Message to {recipient}: {message}\n"
-        result += "\nHere is the outcome of the round:\n"
+        result += "\nResults of the turn:\n"
 
         givers = ", ".join(self.givers)
         takers = ", ".join(self.takers)
@@ -57,12 +57,12 @@ class TurnRecord:
         alliances_against = ", ".join(self.alliances_against)
 
         if self.givers:
-            result += f"These players gave you coins: {givers}\n"
+            result += f"These players gave you a coin: {givers}\n"
         else:
             result += "No players gave you coins\n"
 
         if self.takers:
-            result += f"These players took coins from you: {takers}\n"
+            result += f"These players took a coin from you: {takers}\n"
         else:
             result += "No players took coins from you\n"
 
@@ -74,7 +74,7 @@ class TurnRecord:
                 f"These players formed an alliance against you: {alliances_against}\n"
             )
 
-        result += "Here are the private messages you received from other players:\n"
+        result += "You received these private messages:\n"
         for sender, message in self.messages.items():
             result += f"Message from {sender}: {message}\n"
         result += "\n"

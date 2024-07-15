@@ -77,7 +77,13 @@ class LLM(ABC):
 
 class GPT(LLM):
 
-    model_names = ["gpt-3.5-turbo", "gpt-4-turbo", "gpt-4o"]
+    model_names = [
+        "gpt-3.5-turbo",
+        "gpt-4-turbo",
+        "gpt-4o",
+        "gpt-3.5-turbo-0125",
+        "gpt-3.5-turbo-1106",
+    ]
 
     def setup_client(self):
         self.client = OpenAI()
@@ -157,4 +163,9 @@ class Gemini(LLM):
         message += f"Now here is the User's Request - please respond in under {words} words:\n\n"
         message += user_prompt + "\n"
         response = self.client.generate_content(message)
-        return response.text
+        first_candidate = response.candidates[0]
+
+        if first_candidate.content.parts:
+            myanswer1 = response.candidates[0].content.parts[0].text
+            return myanswer1
+        raise Exception("Could not parse response from Gemini")

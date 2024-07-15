@@ -16,6 +16,8 @@ class Player:
     history: Dict[str, Any]
     coins: int
     records: List[TurnRecord]
+    is_dead: bool
+    is_winner: bool
 
     def __init__(self, name: str, model_name: str, temperature: float):
         """
@@ -27,9 +29,12 @@ class Player:
         self.name = name
         self.llm = LLM.for_model_name(model_name, temperature)
         self.history = {}
-        self.coins = 20
+        self.coins = 12
+        self.prior_coins = 12
         self.other_names = []  # this will be initialized during Arena construction
         self.records = []
+        self.is_dead = False
+        self.is_winner = False
 
     def __repr__(self) -> str:
         """
@@ -58,3 +63,19 @@ class Player:
         system_prompt = self.system_prompt()
         user_prompt = self.user_prompt(turn)
         return self.llm.send(system_prompt, user_prompt, 400)
+
+    def report(self) -> str:
+        """
+        Create a report of this player
+        :return:
+        """
+        result = f"Player name: {self.name}<br/>"
+        result += f"Model: {self.llm.model_name}<br/>"
+        result += f"Temperature: {self.llm.temperature}<br/><br/>"
+        for turn_record in self.records:
+            result += str(turn_record).replace("\n", "<br/>")
+            result += "<br/>"
+        return result
+
+    def kill(self):
+        self.is_dead = True

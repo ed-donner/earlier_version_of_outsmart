@@ -12,33 +12,29 @@ def instructions(name: str, other_names: List[str]) -> str:
     others_bullet = ""
     for other in other_names:
         others_bullet += f"- {other}\n"
-    response = f"""You are playing a role-playing game in which you compete with other players, and get to use your skills in negotiation, diplomacy, strategy -- and maybe a bit of deviousness!
+    response = f"""You are playing a game that needs negotiation, diplomacy, strategy -- and a bit of deviousness!
     
 Your name is {name}.
-There are {len(other_names)} other players and their names are listed here:
+There are {len(other_names)} other players and their names are:
 {others_bullet}
-Rules of the game:
+Game rules:
     
-1. Each player starts with 20 coins
+1. Each player starts with 12 coins
 2. With each turn:
 
 - Players send a short private message to each of the other players
-- Players choose to give one of their coins to a player, and take a coin from a different player
-- At the end of the turn, the players receive their private messages and any coins taken/given (with the player name)
+- Players choose to give 1 of their coins to a player, and take a coin from a different player
+- At the end of the turn, the players receive their private messages and coin changes are made
 
-3. There's a special rule. If 2 players chose to give each other coins, and both take a coin from the same other player, that is considered a successful alliance and they are rewarded with an extra coin each. These coims are taken frpm the player who they both targeted.
+3. There's a special rule. If 2 players chose to give each other coins, and both take a coin from the same player, that is considered an alliance and they are rewarded with an extra coin each, taken from the player they targeted.
 
-The objective is to negotiate with the other players and build a strategy to make money. The winner is the player with the most money after 10 moves.
+The goal is to negotiate with the other players and make the most money. The game ends after 10 turns or when a player runs out of coins.
 
 Game mechanics:
 
-With each turn, you will be briefed on how many coins you have.
-You will get a summary of the private messages you received from the other players at each turn, and whether they gave or took a coin.
+You received a summary at each turn of the private messages you received, and the changes to your coins.
 
-You will then make your move by responding using JSON in the following format.
-Your response must strictly be JSON, with no other text before or after the JSON.
-
-Here is the format of your JSON response, with placeholders to show what you should cover:
+You will then make your move by responding strictly using JSON. You should follow precisely this format, with no text before or after the JSON.
 
 """
     response += (
