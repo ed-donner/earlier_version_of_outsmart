@@ -37,7 +37,7 @@ class Display:
         st.write(each.llm.model_name)
         records = each.records
         st.metric("Coins", each.coins, each.coins - each.prior_coins)
-        with st.expander("Output", expanded=False):
+        with st.expander("Inner thoughts", expanded=False):
             st.markdown(
                 f'<p class="small-font">{each.report()}</p>', unsafe_allow_html=True
             )

@@ -4,11 +4,13 @@ There's an abstract base class LLM that can be subclassed to provide an interfac
 The class method LLM.for_model_name will create an instance of a subclass to interact with the API
 """
 
+import os
 from abc import ABC
 from typing import Any, Dict, Self
 from openai import OpenAI
 import google.generativeai
 import anthropic
+import requests
 
 
 class LLM(ABC):
@@ -83,6 +85,7 @@ class GPT(LLM):
         "gpt-4o",
         "gpt-3.5-turbo-0125",
         "gpt-3.5-turbo-1106",
+        "gpt-4o-mini",
     ]
 
     def setup_client(self):
@@ -168,4 +171,33 @@ class Gemini(LLM):
         if first_candidate.content.parts:
             myanswer1 = response.candidates[0].content.parts[0].text
             return myanswer1
-        raise Exception("Could not parse response from Gemini")
+        raise ValueError("Could not parse response from Gemini")
+
+
+class Llama(LLM):
+
+    API_URL = "https://api-inference.huggingface.co/models/meta-llama/"
+    model_names = ["Meta-Llama-3-8B"]
+
+    def send(self, system_prompt: str, user_prompt: str, max_tokens: int) -> str:
+        """
+        Implemented by subclasses
+        :param system_prompt: The system prompt passed to the LLM
+        :param user_prompt: The user prompt passed to the LLM
+        :param max_tokens: Maximum number of tokens
+        :return: the response from the LLM
+        """
+
+        words = int(max_tokens * 0.75)
+        message = "First, here is a System Message to set context and instructions:\n\n"
+        message += system_prompt + "\n\n"
+        message += f"Now here is the User's Request - please respond in under {words} words:\n\n"
+        message += user_prompt + "\n"
+
+        api_url = self.API_URL + self.model_name
+        headers = {"Authorization": f"Bearer {os.environ["HF_TOKEN"]}"}
+        inputs = {"inputs": "message"}
+        response = requests.post(api_url, headers=headers, json=inputs)
+        result = response.json()
+        print(result)
+        return result

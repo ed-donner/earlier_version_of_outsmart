@@ -55,10 +55,11 @@ class Arena:
                 player.kill()
                 self.handle_game_over()
 
-    def do_turn(self, progress):
+    def do_turn(self, progress) -> bool:
         """
         Carry out a Turn; delegate to a Referee to manage this process
         :param progress: an object on which to report progress that will be reflected in the UI
+        :return True if the game ended
         """
         for player in self.players:
             player.prior_coins = player.coins
@@ -69,6 +70,7 @@ class Arena:
             self.handle_game_over()
         elif not self.is_game_over:
             self.turn += 1
+        return self.is_game_over
 
     @classmethod
     def default(cls) -> Self:
@@ -78,10 +80,10 @@ class Arena:
         """
         names = ["Alex", "Blake", "Charlie", "Drew"]
         model_names = [
-            "gpt-3.5-turbo-0125",
+            "gpt-3.5-turbo",
             "claude-3-haiku-20240307",
             "gemini-pro",
-            "gpt-3.5-turbo-1106",
+            "gpt-4o-mini",
         ]  # claude-3-5-sonnet-20240620
         temperatures = [0.7, 0.7, 0.7, 0.7]
         players = []

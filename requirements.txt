@@ -6,3 +6,4 @@ google.generativeai
 streamlit
 pandas
 charset_normalizer
+watchdog
